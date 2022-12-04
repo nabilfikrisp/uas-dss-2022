@@ -1,6 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Roboto+Slab:wght@400;600;700&display=swap");
+
 :root {
-    --green: #6D9886,
-    --black: #393E46,
-    --cream: #F2E7D5,
-    --white: #F7F7F7
+  --green: #6d9886;
+  --black: #393e46;
+  --cream: #f2e7d5;
+  --white: #f7f7f7;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: var(--cream);
+  color: var(--black);
+  font-family: "Open Sans", sans-serif;
+}
+
+h1,
+h3 {
+  font-family: "Roboto Slab", serif;
+  font-weight: 600;
+}
+
+.list-group-item,
+input[type="checkbox"] {
+  background-color: var(--white);
+}
+
+.btn-primary {
+  background-color: var(--green);
+  color: var(--white);
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--black);
+}
+
+.bg-primary {
+  background-color: var(--green) !important;
+  color: var(--white) !important;
+  border: none !important;
 }
