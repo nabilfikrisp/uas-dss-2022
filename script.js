@@ -14,7 +14,7 @@ async function fetchData(url) {
     const data = await response.json();
     return data;
   } catch (err) {
-    console.log('failed fetching data' + err);
+    console.log("failed fetching data" + err);
   }
 }
 
