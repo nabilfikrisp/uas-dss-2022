@@ -5,6 +5,9 @@ const api_kriminal_url = 'https://opendata.sumedangkab.go.id/index.php/api/61f10
 const api_wisatawan_url = 'https://opendata.sumedangkab.go.id/index.php/api/61d6493fdaea0';
 
 
+// ===============================
+//          FETCH DATA
+// ===============================
 async function fetchData(url) {
   try {
     const response = await fetch(url);
@@ -15,6 +18,9 @@ async function fetchData(url) {
   }
 }
 
+// ===============================
+//       ALGORITMA TOPSIS
+// ===============================
 async function topsis() {
   const dataJalan = await fetchData(api_jalan_url);
   const dataUsaha = await fetchData(api_usaha_url);
@@ -145,6 +151,9 @@ async function topsis() {
   aMinus.usahaKecil = (statusKriteria.usahaKecil == 'cost') ? findMax(matrixTerbobot, 'usahaKecil') : findMin(matrixTerbobot, 'usahaKecil');
   aMinus.usahaMenengah = (statusKriteria.usahaMenengah == 'cost') ? findMax(matrixTerbobot, 'usahaMenengah') : findMin(matrixTerbobot, 'usahaMenengah');
 
+  // =========================
+  //    DISTANCE D+ AND D-
+  // =========================
   let sepMeasure = [];
 
   for (let i = 0; i < matrixTerbobot.length; i++) {
@@ -175,16 +184,40 @@ async function topsis() {
 
 
   console.log(sepMeasure);
-  // let preference = [];
-  // for (let i = 0; i < matrixTerbobot.length; i++) {
-  //   let obj = {};
-  //   obj.kecamatan = matrixTerbobot[i].kecamatan;
-  //   obj.value = ;
-  //   console.log(obj)
-  // }
+  console.log(sepMeasure[0].dPlus);
+  
+  
+  // =========================
+  //        PREFERENCE
+  // =========================
+  let preference = [];
+  for (let i = 0; i < matrixTerbobot.length; i++) {
+    let obj = {};
+    obj.kecamatan = matrixTerbobot[i].kecamatan;
+    obj.preference = sepMeasure[i].dMinus/(sepMeasure[i].dPlus + sepMeasure[i].dMinus);
+    preference.push(obj);
+  }
+  console.log(preference)
+
+  // =========================
+  //          RANK
+  // =========================
+  preference.sort((i,j) => {
+      return i.preference - j.preference;
+  });
+
+  for (let i = 0; i < matrixTerbobot.length; i++) {
+    console.log(preference[i].kecamatan);
+    console.log(preference[i].preference);
+    
+  }
+
 
 }
 
+// =====================================
+//         IDEAL POSITIF (A+) 
+// =====================================
 function findMax(matrix, key) {
   let tempArray = [];
   for (let i = 0; i < matrix.length; i++) {
@@ -193,6 +226,9 @@ function findMax(matrix, key) {
   return Math.max(...tempArray);
 }
 
+// =====================================
+//          IDEAL NEGATIF (A-) 
+// =====================================
 function findMin(matrix, key) {
   let tempArray = [];
   for (let i = 0; i < matrix.length; i++) {
@@ -201,5 +237,8 @@ function findMin(matrix, key) {
   return Math.min(...tempArray);
 }
 
+
+
+// RUN TOPSIS
 topsis()
 
