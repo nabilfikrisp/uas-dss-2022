@@ -237,8 +237,5 @@ function findMin(matrix, key) {
   return Math.min(...tempArray);
 }
 
-
-
 // RUN TOPSIS
 topsis()
-
