@@ -1,20 +1,13 @@
-const api_rumah_url = 'https://opendata.sumedangkab.go.id/index.php/api/6149382b82b12';
+const api_usaha_url = 'https://opendata.sumedangkab.go.id/index.php/api/614a94fe6f021';
+const api_jalan_url = 'https://opendata.sumedangkab.go.id/index.php/api/6147dd371656e';
+const api_penduduk_url = 'https://opendata.sumedangkab.go.id/index.php/api/61493671239d6';
+const api_kriminal_url = 'https://opendata.sumedangkab.go.id/index.php/api/61f10d9a00b06';
+const api_wisatawan_url = 'https://opendata.sumedangkab.go.id/index.php/api/61d6493fdaea0';
 
-// async function getData() {
-//   fetch(api_rumah_url)
-//     .then(res => {
-//       if (res.ok) {
-//         console.log('success fetching');
-//         return res.json()
-//       } else {
-//         console.log('failed fetching');
-//       }
-//     })
-//     .catch(error => console.log('error'))
-// }
-async function fetchData() {
+
+async function fetchData(url) {
   try {
-    const response = await fetch(api_rumah_url);
+    const response = await fetch(url);
     const data = await response.json();
     return data;
   } catch (err) {
@@ -22,25 +15,35 @@ async function fetchData() {
   }
 }
 
-// let getData = async () => {
-//   const a = await fetchData;
-//   return a;
-// };
-// // dataRumah.then(data => {
-//   console.log(data);
-// })
 
-// const fetchData = fetch(api_rumah_url)
-//   .then((response) => response.json())
-//   .then((data) => {
-//     return data;
-//   })
+async function topsis() {
+  const dataJalan = await fetchData(api_jalan_url);
+  const dataUsaha = await fetchData(api_usaha_url);
+  const dataPenduduk = await fetchData(api_penduduk_url);
+  const dataKriminal = await fetchData(api_kriminal_url);
+  const dataWisatawan = await fetchData(api_wisatawan_url);
+  // const bobotJalan = 0.3;
+  console.log(dataWisatawan);
+  let dataset = [];
 
-// const getData = async () => {
-//   const d = await fetchData;
-//   console.log(d);
-// }
+  for (let i = 1; i < dataJalan.length; i++) {
+    let obj = {}
+    obj.kecamatan = dataJalan[i][2];
+    obj.kondisiJln = dataJalan[i][3];
+    obj.jmlUsahaMikro = dataUsaha[i][3];
+    obj.jmlUsahaKecil = dataUsaha[i][4];
+    obj.jmlUsahaMenengah = dataUsaha[i][5];
+    obj.jmlPenduduk = dataPenduduk[i][4];
+    obj.risikoKejahatan = dataKriminal[i][3];
+    obj.jmlWisatawan = dataWisatawan[i][4];
+    dataset.push(obj)
+  }
 
-let dataRumah = fetchData()
-dataRumah.then(data => console.log(data))
-console.log(dataRumah);
+  // for(let i = 0 ; i < dataset.length; i++){
+  //   console.log(dataset[i])
+  // }
+  console.log(dataset)
+}
+
+topsis()
+
