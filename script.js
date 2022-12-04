@@ -27,6 +27,7 @@ async function topsis() {
   const dataPenduduk = await fetchData(api_penduduk_url);
   const dataKriminal = await fetchData(api_kriminal_url);
   const dataWisatawan = await fetchData(api_wisatawan_url);
+  let selectedKecamatan = filter();
   const bobot = {
     jalan: 2,
     penduduk: 5,
@@ -183,8 +184,8 @@ async function topsis() {
 
 
 
-  console.log(sepMeasure);
-  console.log(sepMeasure[0].dPlus);
+  // console.log(sepMeasure);
+  // console.log(sepMeasure[0].dPlus);
   
   
   // =========================
@@ -197,22 +198,31 @@ async function topsis() {
     obj.preference = sepMeasure[i].dMinus/(sepMeasure[i].dPlus + sepMeasure[i].dMinus);
     preference.push(obj);
   }
-  console.log(preference)
+  // console.log(preference)
 
   // =========================
   //          RANK
   // =========================
   preference.sort((i,j) => {
-      return i.preference - j.preference;
+      return j.preference - i.preference;
   });
+  // console.log(preference);
 
-  for (let i = 0; i < matrixTerbobot.length; i++) {
-    console.log(preference[i].kecamatan);
-    console.log(preference[i].preference);
+  // for (let i = 0; i < matrixTerbobot.length; i++) {
+  //   console.log(preference[i].kecamatan);
+  //   console.log(preference[i].preference);
     
+  // }
+
+
+  // ================================================
+  //         CONSOLE LOG KECAMATAN TERFILTER
+  // ================================================
+  for(let i = 0; i < preference.length; i++){
+    if(selectedKecamatan.includes(preference[i].kecamatan.toLowerCase())){
+      console.log(preference[i]);
+    }
   }
-
-
 }
 
 // =====================================
@@ -238,4 +248,15 @@ function findMin(matrix, key) {
 }
 
 // RUN TOPSIS
-topsis()
+// topsis()
+
+function filter(){
+  let inputKecamatan = document.querySelectorAll('input[name="kecamatan"]');
+  let selectedKecamatan = [];
+  inputKecamatan.forEach(function(datum){
+    if(datum.checked){
+      selectedKecamatan.push(datum.value);
+    }
+  })
+  return selectedKecamatan;
+}
