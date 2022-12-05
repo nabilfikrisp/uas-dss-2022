@@ -211,6 +211,12 @@ async function topsis() {
   //         CONSOLE LOG KECAMATAN TERFILTER
   // ================================================
   const rankList = document.querySelector("#hasil .list-group");
+
+  // Reset Child setiap klik tombol
+  while (rankList.firstChild) {
+    rankList.removeChild(rankList.firstChild);
+  }
+
   rankItems = "";
   for (let i = 0; i < preference.length; i++) {
     if (selectedKecamatan.includes(preference[i].kecamatan.toLowerCase())) {
@@ -268,4 +274,10 @@ function filter() {
   return selectedKecamatan;
 }
 
-function showRank(data) {}
+function showRank(data) { }
+
+function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
