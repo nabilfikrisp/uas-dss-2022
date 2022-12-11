@@ -27,6 +27,9 @@ async function topsis() {
   const dataKriminal = await fetchData(api_kriminal_url);
   const dataWisatawan = await fetchData(api_wisatawan_url);
   let selectedKecamatan = filter();
+
+  // console.log(selectedKecamatan);
+
   const bobot = {
     jalan: 2,
     penduduk: 5,
@@ -72,10 +75,19 @@ async function topsis() {
     dataset.push(obj);
   }
 
-  let matrixNormalize = [...dataset];
+  let filteredDataset = [];
+  
+  for (let i = 0; i < dataset.length; i++) {
+    if (selectedKecamatan.includes(dataset[i].kecamatan.toLowerCase())) {
+      filteredDataset.push(dataset[i]);
+    }
+  }
+
+  console.log(filteredDataset);
+  let matrixNormalize = [...filteredDataset];
 
   // HITUNG PEMBAGI
-  dataset.forEach(function (datum) {
+  filteredDataset.forEach(function (datum) {
     pembagi.jalan += Math.pow(datum.jalan, 2);
     pembagi.penduduk += Math.pow(datum.penduduk, 2);
     pembagi.kriminal += Math.pow(datum.kriminal, 2);
@@ -89,19 +101,19 @@ async function topsis() {
   });
 
   // HITUNG MATRIX TERNORMALISASI
-  for (let i = 0; i < dataset.length; i++) {
-    matrixNormalize[i].jalan = dataset[i].jalan / pembagi.jalan;
-    matrixNormalize[i].usahaMikro = dataset[i].usahaMikro / pembagi.usahaMikro;
-    matrixNormalize[i].usahaKecil = dataset[i].usahaKecil / pembagi.usahaKecil;
-    matrixNormalize[i].usahaMenengah = dataset[i].usahaMenengah / pembagi.usahaMenengah;
-    matrixNormalize[i].penduduk = dataset[i].penduduk / pembagi.penduduk;
-    matrixNormalize[i].kriminal = dataset[i].kriminal / pembagi.kriminal;
-    matrixNormalize[i].wisatawan = dataset[i].wisatawan / pembagi.wisatawan;
+  for (let i = 0; i < filteredDataset.length; i++) {
+    matrixNormalize[i].jalan = filteredDataset[i].jalan / pembagi.jalan;
+    matrixNormalize[i].usahaMikro = filteredDataset[i].usahaMikro / pembagi.usahaMikro;
+    matrixNormalize[i].usahaKecil = filteredDataset[i].usahaKecil / pembagi.usahaKecil;
+    matrixNormalize[i].usahaMenengah = filteredDataset[i].usahaMenengah / pembagi.usahaMenengah;
+    matrixNormalize[i].penduduk = filteredDataset[i].penduduk / pembagi.penduduk;
+    matrixNormalize[i].kriminal = filteredDataset[i].kriminal / pembagi.kriminal;
+    matrixNormalize[i].wisatawan = filteredDataset[i].wisatawan / pembagi.wisatawan;
   }
 
   // HITUNG MATRIX TERNORMALISASI TERBOBOT
   let matrixTerbobot = [...matrixNormalize];
-  for (let i = 0; i < dataset.length; i++) {
+  for (let i = 0; i < filteredDataset.length; i++) {
     matrixTerbobot[i].jalan = matrixNormalize[i].jalan * bobot.jalan;
     matrixTerbobot[i].usahaMikro = matrixNormalize[i].usahaMikro * bobot.usahaMikro;
     matrixTerbobot[i].usahaKecil = matrixNormalize[i].usahaKecil * bobot.usahaKecil;
@@ -233,7 +245,7 @@ async function topsis() {
             className: "badge bg-primary rounded-pill",
           })
         );
-      console.log(preference[i]);
+      // console.log(preference[i]);
     }
   }
 }
