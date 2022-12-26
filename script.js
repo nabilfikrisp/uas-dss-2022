@@ -28,16 +28,12 @@ async function topsis() {
   const dataWisatawan = await fetchData(api_wisatawan_url);
   let selectedKecamatan = filter();
 
-  // console.log(selectedKecamatan);
-
   const bobot = {
     jalan: 2,
     penduduk: 5,
     kriminal: 2,
     wisatawan: 3,
     usahaMikro: 4,
-    // usahaKecil: 4,
-    // usahaMenengah: 3,
   };
 
   const statusKriteria = {
@@ -46,8 +42,6 @@ async function topsis() {
     kriminal: "cost",
     wisatawan: "benefit",
     usahaMikro: "cost",
-    // usahaKecil: "cost",
-    // usahaMenengah: "cost",
   };
 
   let dataset = [];
@@ -58,8 +52,6 @@ async function topsis() {
     kriminal: 1,
     wisatawan: 1,
     usahaMikro: 1,
-    // usahaKecil: 1,
-    // usahaMenengah: 1,
   };
 
   for (let i = 1; i < dataUsaha.length; i++) {
@@ -67,8 +59,6 @@ async function topsis() {
     obj.kecamatan = dataUsaha[i][2];
     obj.jalan = dataJalan[i][3] * 1000;
     obj.usahaMikro = dataUsaha[i][3] * 1;
-    // obj.usahaKecil = dataUsaha[i][4] * 1;
-    // obj.usahaMenengah = dataUsaha[i][5] * 1;
     obj.penduduk = dataPenduduk[i][4] * 1;
     obj.kriminal = dataKriminal[i][3] * 100;
     obj.wisatawan = dataWisatawan[i][4] * 1;
@@ -93,8 +83,6 @@ async function topsis() {
     pembagi.kriminal += Math.pow(datum.kriminal, 2);
     pembagi.wisatawan += Math.pow(datum.wisatawan, 2);
     pembagi.usahaMikro += Math.pow(datum.usahaMikro, 2);
-    // // pembagi.usahaKecil += Math.pow(datum.usahaKecil, 2);
-    // // pembagi.usahaMenengah += Math.pow(datum.usahaMenengah, 2);
   });
   Object.keys(pembagi).forEach(function (key) {
     pembagi[key] = Math.sqrt(pembagi[key]);
@@ -104,8 +92,6 @@ async function topsis() {
   for (let i = 0; i < filteredDataset.length; i++) {
     matrixNormalize[i].jalan = filteredDataset[i].jalan / pembagi.jalan;
     matrixNormalize[i].usahaMikro = filteredDataset[i].usahaMikro / pembagi.usahaMikro;
-    // // // matrixNormalize[i].usahaKecil = filteredDataset[i].usahaKecil / pembagi.usahaKecil;
-    // // // matrixNormalize[i].usahaMenengah = filteredDataset[i].usahaMenengah / pembagi.usahaMenengah;
     matrixNormalize[i].penduduk = filteredDataset[i].penduduk / pembagi.penduduk;
     matrixNormalize[i].kriminal = filteredDataset[i].kriminal / pembagi.kriminal;
     matrixNormalize[i].wisatawan = filteredDataset[i].wisatawan / pembagi.wisatawan;
@@ -116,8 +102,6 @@ async function topsis() {
   for (let i = 0; i < filteredDataset.length; i++) {
     matrixTerbobot[i].jalan = matrixNormalize[i].jalan * bobot.jalan;
     matrixTerbobot[i].usahaMikro = matrixNormalize[i].usahaMikro * bobot.usahaMikro;
-    // // // matrixTerbobot[i].usahaKecil = matrixNormalize[i].usahaKecil * bobot.usahaKecil;
-    // // // matrixTerbobot[i].usahaMenengah = matrixNormalize[i].usahaMenengah * bobot.usahaMenengah;
     matrixTerbobot[i].penduduk = matrixNormalize[i].penduduk * bobot.penduduk;
     matrixTerbobot[i].kriminal = matrixNormalize[i].kriminal * bobot.kriminal;
     matrixTerbobot[i].wisatawan = matrixNormalize[i].wisatawan * bobot.wisatawan;
@@ -129,8 +113,6 @@ async function topsis() {
     kriminal: 1,
     wisatawan: 1,
     usahaMikro: 1,
-    // usahaKecil: 1,
-    // usahaMenengah: 1,
   };
 
   let aMinus = {
@@ -139,8 +121,6 @@ async function topsis() {
     kriminal: 1,
     wisatawan: 1,
     usahaMikro: 1,
-    // usahaKecil: 1,
-    // usahaMenengah: 1,
   };
 
   aPlus.jalan = statusKriteria.jalan == "benefit" ? findMax(matrixTerbobot, "jalan") : findMin(matrixTerbobot, "jalan");
@@ -148,16 +128,12 @@ async function topsis() {
   aPlus.kriminal = statusKriteria.kriminal == "benefit" ? findMax(matrixTerbobot, "kriminal") : findMin(matrixTerbobot, "kriminal");
   aPlus.wisatawan = statusKriteria.wisatawan == "benefit" ? findMax(matrixTerbobot, "wisatawan") : findMin(matrixTerbobot, "wisatawan");
   aPlus.usahaMikro = statusKriteria.usahaMikro == "benefit" ? findMax(matrixTerbobot, "usahaMikro") : findMin(matrixTerbobot, "usahaMikro");
-  // // // // aPlus.usahaKecil = statusKriteria.usahaKecil == "benefit" ? findMax(matrixTerbobot, "usahaKecil") : findMin(matrixTerbobot, "usahaKecil");
-  // // // // aPlus.usahaMenengah = statusKriteria.usahaMenengah == "benefit" ? findMax(matrixTerbobot, "usahaMenengah") : findMin(matrixTerbobot, "usahaMenengah");
 
   aMinus.jalan = statusKriteria.jalan == "cost" ? findMax(matrixTerbobot, "jalan") : findMin(matrixTerbobot, "jalan");
   aMinus.penduduk = statusKriteria.penduduk == "cost" ? findMax(matrixTerbobot, "penduduk") : findMin(matrixTerbobot, "penduduk");
   aMinus.kriminal = statusKriteria.kriminal == "cost" ? findMax(matrixTerbobot, "kriminal") : findMin(matrixTerbobot, "kriminal");
   aMinus.wisatawan = statusKriteria.wisatawan == "cost" ? findMax(matrixTerbobot, "wisatawan") : findMin(matrixTerbobot, "wisatawan");
   aMinus.usahaMikro = statusKriteria.usahaMikro == "cost" ? findMax(matrixTerbobot, "usahaMikro") : findMin(matrixTerbobot, "usahaMikro");
-  // // // // aMinus.usahaKecil = statusKriteria.usahaKecil == "cost" ? findMax(matrixTerbobot, "usahaKecil") : findMin(matrixTerbobot, "usahaKecil");
-  // // // // aMinus.usahaMenengah = statusKriteria.usahaMenengah == "cost" ? findMax(matrixTerbobot, "usahaMenengah") : findMin(matrixTerbobot, "usahaMenengah");
 
   // =========================
   //    DISTANCE D+ AND D-
@@ -173,8 +149,6 @@ async function topsis() {
       Math.pow(aPlus.kriminal - matrixTerbobot[i].kriminal, 2) +
       Math.pow(aPlus.wisatawan - matrixTerbobot[i].wisatawan, 2) +
       Math.pow(aPlus.usahaMikro - matrixTerbobot[i].usahaMikro, 2);
-      // // Math.pow(aPlus.usahaKecil - matrixTerbobot[i].usahaKecil, 2) +
-      // // Math.pow(aPlus.usahaMenengah - matrixTerbobot[i].usahaMenengah, 2);
 
     obj.dMinus =
       Math.pow(aMinus.jalan - matrixTerbobot[i].jalan, 2) +
@@ -182,16 +156,11 @@ async function topsis() {
       Math.pow(aMinus.kriminal - matrixTerbobot[i].kriminal, 2) +
       Math.pow(aMinus.wisatawan - matrixTerbobot[i].wisatawan, 2) +
       Math.pow(aMinus.usahaMikro - matrixTerbobot[i].usahaMikro, 2);
-      // // Math.pow(aMinus.usahaKecil - matrixTerbobot[i].usahaKecil, 2) +
-      // // Math.pow(aMinus.usahaMenengah - matrixTerbobot[i].usahaMenengah, 2);
 
     obj.dPlus = Math.sqrt(obj.dPlus);
     obj.dMinus = Math.sqrt(obj.dMinus);
     sepMeasure.push(obj);
   }
-
-  // console.log(sepMeasure);
-  // console.log(sepMeasure[0].dPlus);
 
   // =========================
   //        PREFERENCE
@@ -203,7 +172,6 @@ async function topsis() {
     obj.preference = sepMeasure[i].dMinus / (sepMeasure[i].dPlus + sepMeasure[i].dMinus);
     preference.push(obj);
   }
-  // console.log(preference)
 
   // =========================
   //          RANK
@@ -211,13 +179,6 @@ async function topsis() {
   preference.sort((i, j) => {
     return j.preference - i.preference;
   });
-  // console.log(preference);
-
-  // for (let i = 0; i < matrixTerbobot.length; i++) {
-  //   console.log(preference[i].kecamatan);
-  //   console.log(preference[i].preference);
-
-  // }
 
   // ================================================
   //         CONSOLE LOG KECAMATAN TERFILTER
@@ -245,7 +206,6 @@ async function topsis() {
             className: "badge bg-primary rounded-pill",
           })
         );
-      // console.log(preference[i]);
     }
   }
 }
@@ -272,8 +232,6 @@ function findMin(matrix, key) {
   return Math.min(...tempArray);
 }
 
-// RUN TOPSIS
-// topsis()
 
 function filter() {
   let inputKecamatan = document.querySelectorAll('input[name="kecamatan"]');
