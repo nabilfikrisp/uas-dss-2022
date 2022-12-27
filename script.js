@@ -1,3 +1,6 @@
+// ===============================
+//          API DATASET
+// ===============================
 const api_usaha_url = "https://opendata.sumedangkab.go.id/index.php/api/614a94fe6f021";
 const api_jalan_url = "https://opendata.sumedangkab.go.id/index.php/api/6147dd371656e";
 const api_penduduk_url = "https://opendata.sumedangkab.go.id/index.php/api/61493671239d6";
@@ -232,7 +235,9 @@ function findMin(matrix, key) {
   return Math.min(...tempArray);
 }
 
-
+// =====================================
+//       FILTER INPUT KANDIDAT
+// =====================================
 function filter() {
   let inputKecamatan = document.querySelectorAll('input[name="kecamatan"]');
   let selectedKecamatan = [];
@@ -242,12 +247,4 @@ function filter() {
     }
   });
   return selectedKecamatan;
-}
-
-function showRank(data) { }
-
-function removeAllChildNodes(parent) {
-    while (parent.firstChild) {
-        parent.removeChild(parent.firstChild);
-    }
 }
